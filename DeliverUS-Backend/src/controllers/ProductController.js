@@ -36,10 +36,36 @@ const show = async function (req, res) {
   }
 }
 
+const updateRestayrantInExpensiveness = async function (restaurantId) {
+  const queryResultOtherRestaurantAvgPrice = await Product.findOne({
+    where : { restaurantId: { [Sequelize.Op.ne]: restaurantId}},
+    attributes : [
+      [ Sequelize.fn('AVG',Sequelize.col('price')), 'avgPrice']
+  ]
+})
+  const queryResultCurrentRestaurantAvgPrice = await Product.finOne( {
+    where: { restaurantId},
+    attributes : [
+      [Sequelize.fn('AVG',Sequelize.col('price')), 'avgPrice']
+    ]
+  })
+  if (queryResultOtherRestaurantAvgPrice !== null &&  queryResultCurrentRestaurantAvgPrice !== null){
+    const avgPriceOtherRestaurants = queryResultOtherRestaurantAvgPrice.dataValues.avgPrice 
+    const avgPriceCurrentRestaurant = queryResultCurrentRestaurantAvgPrice.dataValues.avgPrice
+
+    const isEconomic  = avgPriceCurrentRestaurant < avgPriceOtherRestaurants
+
+    Restaurant.update({economic : isEconomic}, { where: {id: restaurantId}})
+  }
+}
+
 const create = async function (req, res) {
   let newProduct = Product.build(req.body)
   try {
     newProduct = await newProduct.save()
+    
+    updateRestayrantInExpensiveness(newProduct.restaurantId)
+
     res.json(newProduct)
   } catch (err) {
     res.status(500).send(err)
@@ -113,6 +139,7 @@ const ProductController = {
   create,
   update,
   destroy,
-  popular
+  popular,
+
 }
 export default ProductController

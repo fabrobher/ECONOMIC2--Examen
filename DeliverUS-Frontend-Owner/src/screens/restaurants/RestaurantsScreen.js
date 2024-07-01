@@ -40,6 +40,14 @@ export default function RestaurantsScreen ({ navigation, route }) {
           <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
         }
         <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
+
+        {item.economic && <TextRegular textStyle = {[styles.economic, { color : GlobalStyles.brandSuccess,
+          borderColor: GlobalStyles.brandSuccess}]}>€ </TextRegular>}
+        
+        {!item.economic && 
+        <TextRegular textStyle = {[styles.economic, { color : GlobalStyles.brandPrimary,
+          borderColor: GlobalStyles.brandPrimary}]}>€€</TextRegular>}
+
         <View style={styles.actionButtonsContainer}>
           <Pressable
             onPress={() => navigation.navigate('EditRestaurantScreen', { id: item.id })
@@ -59,7 +67,7 @@ export default function RestaurantsScreen ({ navigation, route }) {
             </TextRegular>
           </View>
         </Pressable>
-
+          
         <Pressable
             onPress={() => { setRestaurantToBeDeleted(item) }}
             style={({ pressed }) => [
@@ -77,6 +85,8 @@ export default function RestaurantsScreen ({ navigation, route }) {
             </TextRegular>
           </View>
         </Pressable>
+        
+        
         </View>
       </ImageCard>
     )
@@ -177,6 +187,13 @@ export default function RestaurantsScreen ({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  economic :{
+    marginLeft : 400,
+    marginTop: -30,
+    borderWidth : 2,
+    width: 45,
+    borderRadius: 10
   },
   button: {
     borderRadius: 8,

@@ -25,6 +25,12 @@ module.exports = {
       url: {
         type: Sequelize.STRING
       },
+      economic: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+  
+      },
+
       shippingCosts: {
         allowNull: false,
         defaultValue: 0.0,
